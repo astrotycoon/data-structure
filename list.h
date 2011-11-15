@@ -67,22 +67,19 @@ extern bool list_delete_node(list_t* list, list_node_t* node);
 extern bool list_delete_node_at_index(list_t* list, size_t index);
 
 extern bool list_update_node(list_t* list, list_node_t* dst, list_node_t* src);
-extern bool list_update_node_at_index(list_t* list, size_t index, list_node_t* node);
+extern bool list_update_node_at_index(list_t* list, size_t index, void * data);
 
 extern list_nodt_t* list_find_by_data(list_t* list, const void* data);
 extern list_node_t* list_find_by_index(list_t* list, size_t index);
 
-extern list_node_t* node_get_by_value(list_t* list, void* data);
-extern list_node_t* node_get_by_index(list_t* list, size_t index);
-
 /* list_iterater_t prototypes */
-extern list_itetator_t* list_iterator_create(list_t* list, list_direction_t direaction);
+extern list_iterator_t* list_iterator_create(list_t* list, list_direction_t direaction);
 
 extern list_iterator_t* list_iterator_create_fome_node(list_node_t* node, list_iterator_t direction);
 
-extern list_node_t* list_iterator_next(list_iterator_t * iterator);
+extern list_node_t* list_iterator_next(list_iterator_t* iterator);
 
-extern void list_iterator_destroy(list_iterator_t * iterator);
+extern void list_iterator_destroy(list_iterator_t* iterator);
 
 #define list_size(list) ((list)->size)
 #ifdef __cplusplus
