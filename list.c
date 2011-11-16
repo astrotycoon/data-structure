@@ -386,7 +386,7 @@ extern int list_delete_node_by_data(list_t* list, void* data)
 	return index;
 }
 
-extern list_iterator_t* list_iterater_create(list_t* list, list_direction_t direction)
+static list_iterator_t* list_iterater_create(list_t* list, list_direction_t direction)
 {
 	list_node_t* node = direction == LIST_HEAD
 	? list->head
@@ -395,7 +395,7 @@ extern list_iterator_t* list_iterater_create(list_t* list, list_direction_t dire
 	return list_iteraror_create_from_node(node, direction);	
 }
 
-extern list_iterator_t* list_iterator_create_frome_node(list_node_t* node, list_iterator_t direction)
+static list_iterator_t* list_iterator_create_frome_node(list_node_t* node, list_iterator_t direction)
 {
 	list_iterator_t* iterator = NULL;
 	if ((iterator = (list_iterator_t *)LIST_MALLOC(sizeof(list_iterator_t))) == NULL)
@@ -409,7 +409,7 @@ extern list_iterator_t* list_iterator_create_frome_node(list_node_t* node, list_
 	return iterator;
 }
 
-extern list_node_t* list_iterator_next(list_iterator_t* iterator)
+static list_node_t* list_iterator_next(list_iterator_t* iterator)
 {
 	list_node_t* node = NULL;
 	
@@ -420,7 +420,7 @@ extern list_node_t* list_iterator_next(list_iterator_t* iterator)
 	return node;
 }
 	
-extern void list_iterator_destroy(list_iterator_t* iterator)
+static void list_iterator_destroy(list_iterator_t* iterator)
 {
 	LIST_FREE(iterator);
 }
