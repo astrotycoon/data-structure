@@ -75,19 +75,19 @@ extern void list_destroy(list_t* list)
 	LIST_FREE(list);
 }
 
-extern list_t* list_prepend(list_t* list, void* data)
+extern bool list_prepend(list_t* list, void* data)
 {
 	if (NULL == list || NULL == data)
 	{
 		errno = EINVAL; 
-		return NULL;
+		return false;
 	}
 
 	list_node_t* new_node = NULL;
 	if ((new_node = (list_node_t *)LIST_MALLOC(sizeof(list_node))) == NULL)
 	{
 		errno = ENOMEM;
-		return NULL;
+		return false;
 
 	}
 	new_node->data = data;
@@ -107,22 +107,22 @@ extern list_t* list_prepend(list_t* list, void* data)
 	
 	++list->len;
 
-	return list;
+	return true;
 }
 	
-extern list_t* list_append(list_t* list, void* data)
+extern bool list_append(list_t* list, void* data)
 {
 	if (NULL == list || NULL == node)
 	{
 		errno = EINVAL;
-		return NULL;
+		return false;
 	}
 	
 	list_node_t* new_node = NULL;
 	if ((new_node = (list_node_t *)LIST_MALLOC(sizeof(list_node))) == NULL)
 	{
 		errno = ENOMEM;
-		return NULL;
+		return false;
 	}
 	new_node->data = data;
 
@@ -141,8 +141,7 @@ extern list_t* list_append(list_t* list, void* data)
 	
 	++list->len;
 	
-	return list;
-
+	return true;
 }
 
 /* insert data into list "list" in the order before "old_node" */

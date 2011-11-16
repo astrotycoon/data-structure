@@ -18,9 +18,9 @@ extern "C" {
 /* list_node_t struct */
 typedef struct list_node
 {
-	void* 		  data;
-	struct list_node* prev;
-	struct list_node* next;
+	void* 		  data; /* generic pointer to data */
+	struct list_node* prev;	/* link to previous node   */
+	struct list_node* next; /* link to next node       */
 }list_node_t;
 
 /* list_t struct */
@@ -30,10 +30,11 @@ typedef struct list
 	list_node_t* head;
 	list_node_t* tail;
 	void* (*Lcreatedata)(void* data);   			/* create node */
-	void  (*Ldestroy)(void* data);				/* delete node */
+	void  (*Ldeletedata)(void* data);				/* delete node */
 	int   (*Lmatch)(const void* data1,const void* data2); 	/* data1 < data2, return -1 */
 								/* data1 == data2, return 0 */
 								/* data1 > data2, reruen 1  */
+	void* (*Ldupdata)(void* data);				/* copy data */
 }list_t;
 
 /* list_iterator_t direction */
@@ -61,8 +62,8 @@ extern list_t* list_create(
 
 extern void list_destroy(list_t* list);
 
-extern list_t* list_prepend(list_t* list, void* data);
-extern list_t* list_append(list_t* list, void* data);
+extern bool list_prepend(list_t* list, void* data);
+extern bool list_append(list_t* list, void* data);
 
 extern bool list_insert_node_at_front(list_t* list, list_node_t* old_node, const void* data);
 extern bool list_insett_node_at_later(list_t* list, list_node_t* old_node, const void* data);
