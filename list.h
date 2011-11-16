@@ -30,7 +30,7 @@ typedef struct list
 	list_node_t* head;
 	list_node_t* tail;
 	void (*destroy)(void* data);
-	void (*match)(void* data1, void* data2);
+	int (*match)(const void* data1,const void* data2);
 	void (*duplicate)(void* data)
 }list_t;
 
@@ -72,6 +72,7 @@ extern bool list_update_node_at_index(list_t* list, size_t index, void * data);
 extern list_nodt_t* list_find_by_data(list_t* list, const void* data);
 extern list_node_t* list_find_by_index(list_t* list, size_t index);
 
+extern list_t* list_duplicate(list_t* list);
 /* list_iterater_t prototypes */
 extern list_iterator_t* list_iterator_create(list_t* list, list_direction_t direaction);
 

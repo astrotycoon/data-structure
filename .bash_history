@@ -43,3 +43,19 @@ mv list.c list.h
 ls
 vim list.h
 vim list.h
+cd
+ls
+vim list.c
+su 
+ls
+vim list.h
+git add .
+git commit -m 'updat'
+ls
+git-push origin master
+su
+ls
+vim list.h
+vim /etc/vimrc 
+ll /etc/vimrc 
+su

@@ -454,9 +454,17 @@ extern list_node_t* list_find_by_data(list_t* list, void* data)
 	iterator = list_iterator_create(list, LIST_HEAD);
 	while (node = (list_iterator_next(iterator)) != NULL)
 	{
-		if (node->data == data)
+		if (list->match)
 		{
-			return node;
+			if (0 == list->match(node->data, data))
+				return node;
+		}
+		else
+		{
+			if (node->data == data)
+			{
+				return node;
+			}
 		}
 	}
 	
@@ -494,4 +502,57 @@ extern list_node_t* list_find_by_index(list_t* list, size_t index)
 	return current;
 }
 
+extern list_t* list_duplicate(list_t* list)
+{
+	if (NULL == list)
+	{
+		errno = EINVAL;
+		return NULL;
+	}
+	list_t* copy_list = NULL;
+	list_iterator_t* iterator = NULL;
+	list_node_t* node = NULL;
 
+	if ((copy_list = (list_t *)LIST_MALLOC(sizeof(list_t))) == NULL)
+	{
+		errno = ENOMEM;
+		return NULL;
+	}
+	copy_list->destroy = list->destroy;
+	copy_list->match = list->match;
+	copy_list->duplicate = list->duplicate;
+
+	iterator = list_iterator_create(list, LIST_HEAD);
+	while ((node = list_iterator_next(iterator)) != NULL)
+	{
+		void* data;
+		
+		if (list->duplicate)
+		{
+			data = list->duplicate(node->data);
+			if (NULL == data)
+			{
+				list_destroy(copy_list);
+				list_iterator_destroy(iterator);
+				return NULL;
+			}
+		}
+		else
+		{
+			data = node->data;
+		}
+
+		if (NULL == list_append(copy_list, data))
+		{
+			
+			list_destroy(copy_list);
+			list_iterator_destroy(iterator);
+			return NULL;
+		}
+	}
+
+	list_iterator_destroy(iterator);
+	
+	return copy_list;
+}
+	
