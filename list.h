@@ -18,7 +18,7 @@ extern "C" {
 /* list_node_t struct */
 typedef struct list_node
 {
-	void* data;
+	void* 		  data;
 	struct list_node* prev;
 	struct list_node* next;
 }list_node_t;
@@ -29,11 +29,11 @@ typedef struct list
 	size_t len;
 	list_node_t* head;
 	list_node_t* tail;
-	void* (*Lcreatedata)(void* data);   	/* create node */
-	void (*Ldestroy)(void* data);		/* delete node */
-	int (*Lmatch)(const void* data1,const void* data2); 	/* data1 < data2, return -1 */
-														/* data1 == data2, return 0 */
-														/* data1 > data2, reruen 1  */
+	void* (*Lcreatedata)(void* data);   			/* create node */
+	void  (*Ldestroy)(void* data);				/* delete node */
+	int   (*Lmatch)(const void* data1,const void* data2); 	/* data1 < data2, return -1 */
+								/* data1 == data2, return 0 */
+								/* data1 > data2, reruen 1  */
 }list_t;
 
 /* list_iterator_t direction */
@@ -46,7 +46,7 @@ typedef enum
 /* list_iterator_t struct */
 typedef list_iterator
 {
-	list_node_t* next;
+	list_node_t*          next;
 	list_direction_t direction;
 }list_iterator_t;
 
@@ -55,9 +55,9 @@ extern list_node_t* list_node_create(list_t* list, void* data);
 
 /* list_t prototypes */
 extern list_t* list_create(
-					void* (*createnode)(void* data),
-					void  (*dstroy)(void* data),
-					int (*match)(void* data1, void* data2));
+			void* (*createnode)(void* data),
+			void  (*dstroy)(void* data),
+			int   (*match)(void* data1, void* data2));
 
 extern void list_destroy(list_t* list);
 

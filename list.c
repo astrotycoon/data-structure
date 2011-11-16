@@ -16,24 +16,21 @@ extern list_node_t* list_node_create(list_t* list, void* data)
 
 	node_ret->prev = NULL;
 	node_ret->next = NULL;
-	if (list->createnode)
+	node_ret->data = list->createnode(data);
+	if (NULL == node_ret->data)
 	{
-		node_ret->data = list->createnode(data);
-		if (NULL == node_ret->data)
-		{
-			LIST_FREE(node_ret);
-			return NULL;
-		}
-	}	
+		LIST_FREE(node_ret);
+		return NULL;
+	}
 
 	return node_ret;
 }
 
 /* on error, NULL is returned. Othersize the pointer to the new list */
 extern list_t* list_create(
-					void* (*createnode)(void* data),
-					void  (*dstroy)(void* data),
-					int (*match)(void* data1, void* data2))
+			void* (*createnode)(void* data),
+			void  (*dstroy)(void* data),
+			int   (*match)(void* data1, void* data2))
 {
 	list_t* list_ret = NULL;
 
