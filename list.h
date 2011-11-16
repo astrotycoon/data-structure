@@ -79,13 +79,13 @@ extern list_t* list_reversal(list_t* list);
 
 extern list_t* list_sort(list_t* list);
 /* list_iterater_t prototypes */
-extern list_iterator_t* list_iterator_create(list_t* list, list_direction_t direaction);
+static list_iterator_t* list_iterator_create(list_t* list, list_direction_t direaction);
 
-extern list_iterator_t* list_iterator_create_fome_node(list_node_t* node, list_iterator_t direction);
+static list_iterator_t* list_iterator_create_fome_node(list_node_t* node, list_iterator_t direction);
 
-extern list_node_t* list_iterator_next(list_iterator_t* iterator);
+static list_node_t* list_iterator_next(list_iterator_t* iterator);
 
-extern void list_iterator_destroy(list_iterator_t* iterator);
+static void list_iterator_destroy(list_iterator_t* iterator);
 
 #define list_size(list) ((list)->size)
 #ifdef __cplusplus
