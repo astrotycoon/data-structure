@@ -1,6 +1,6 @@
 #ifndef __LIST_H__
 #ifndef __LIST_H__
-
+/* for C++ complier */
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -65,6 +65,7 @@ extern bool list_insert_node_at_index(list_t* list, size_t index, const void* da
 
 extern bool list_delete_node(list_t* list, list_node_t* node);
 extern bool list_delete_node_at_index(list_t* list, size_t index);
+extern int list_delete_node_by_data(list_t* list, void* data);
 
 extern bool list_update_node(list_t* list, list_node_t* dst, list_node_t* src);
 extern bool list_update_node_at_index(list_t* list, size_t index, void * data);
@@ -73,6 +74,10 @@ extern list_nodt_t* list_find_by_data(list_t* list, const void* data);
 extern list_node_t* list_find_by_index(list_t* list, size_t index);
 
 extern list_t* list_duplicate(list_t* list);
+
+extern list_t* list_reversal(list_t* list);
+
+extern list_t* list_sort(list_t* list);
 /* list_iterater_t prototypes */
 extern list_iterator_t* list_iterator_create(list_t* list, list_direction_t direaction);
 

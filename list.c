@@ -349,6 +349,43 @@ extern bool list_delete_at_index(list_t* list, size_t index)
 	return true;
 }	
 
+/* On error, 0 is returnd, or a non-zere is returnd */
+extern int list_delete_node_by_data(list_t* list, void* data)
+{
+	if (NULL == list || NULL == data)
+	{
+		errno = EINVAL;
+		return 0;
+	}
+
+	int index = 0;
+	list_iterator_t* iterator = NULL;
+	list_node_t* node = NULL;
+	
+	iterator = list_iterator_create(list);	
+	
+	while ((node = list_iterator_next(iterator)) != NULL)
+	{
+		++index;
+		if (node->match)
+		{
+			if (0 == node->match(node->data, data))
+			{
+				list_delete_node(list, node);
+			}
+		}
+		else
+		{
+			if (node->data == data)
+			{
+				list_delete_node(list, node);
+			}
+		}
+	}
+	list_iterator_destroy(itrator);
+	return index;
+}
+
 extern list_iterator_t* list_iterater_create(list_t* list, list_direction_t direction)
 {
 	list_node_t* node = direction == LIST_HEAD
@@ -555,4 +592,33 @@ extern list_t* list_duplicate(list_t* list)
 	
 	return copy_list;
 }
-	
+
+extern list_t* list_reversal(list_t* list)
+{
+	if (NULL == list)
+	{
+		errno = EINVAL;
+		return NULL;
+	}
+
+	list_node_t* top = list->head;
+	list_node_t* end = list->tail;
+
+	while (top != end)
+	{
+		list_node_t* next = top->next;
+		list_node_t* prev = end->prev;
+
+		top->next = NULL;
+		top->prev = prev;
+		end->next = next;
+		end->prev = NULL;
+		next->prev = end;
+		prev->next = top;
+
+		top = next;
+		end = prev;
+	}
+
+	return list;
+}	
