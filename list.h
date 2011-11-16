@@ -29,9 +29,11 @@ typedef struct list
 	size_t len;
 	list_node_t* head;
 	list_node_t* tail;
-	void (*destroy)(void* data);
-	int (*match)(const void* data1,const void* data2);
-	void (*duplicate)(void* data)
+	void* (*Lcreatedata)(void* data);   	/* create node */
+	void (*Ldestroy)(void* data);		/* delete node */
+	int (*Lmatch)(const void* data1,const void* data2); 	/* data1 < data2, return -1 */
+														/* data1 == data2, return 0 */
+														/* data1 > data2, reruen 1  */
 }list_t;
 
 /* list_iterator_t direction */
@@ -49,10 +51,13 @@ typedef list_iterator
 }list_iterator_t;
 
 /* list_node_t prototypes */
-extern list_node_t* list_node_create(void* data);
+extern list_node_t* list_node_create(list_t* list, void* data);
 
 /* list_t prototypes */
-extern list_t* list_create(void);
+extern list_t* list_create(
+					void* (*createnode)(void* data),
+					void  (*dstroy)(void* data),
+					int (*match)(void* data1, void* data2));
 
 extern void list_destroy(list_t* list);
 
