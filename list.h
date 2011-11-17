@@ -29,12 +29,12 @@ typedef struct list
 	size_t len;
 	list_node_t* head;
 	list_node_t* tail;
-	void* (*Lcreatedata)(void* data);   			/* create node */
-	void  (*Ldeletedata)(void* data);				/* delete node */
+	void* (*Lcreatedata)(void* data);   			/* create node              */
+	void  (*Ldeletedata)(void* data);				/* delete node      */
 	int   (*Lmatch)(const void* data1,const void* data2); 	/* data1 < data2, return -1 */
 								/* data1 == data2, return 0 */
 								/* data1 > data2, reruen 1  */
-	void* (*Ldupdata)(void* data);				/* copy data */
+	void* (*Ldupdata)(void* data);				/* copy data                */
 }list_t;
 
 /* list_iterator_t direction */
@@ -65,9 +65,11 @@ extern void list_destroy(list_t* list);
 extern bool list_prepend(list_t* list, void* data);
 extern bool list_append(list_t* list, void* data);
 
-extern bool list_insert_node_at_front(list_t* list, list_node_t* old_node, const void* data);
-extern bool list_insett_node_at_later(list_t* list, list_node_t* old_node, const void* data);
+//extern bool list_insert_node_at_front(list_t* list, list_node_t* old_node, const void* data);
+//extern bool list_insett_node_at_later(list_t* list, list_node_t* old_node, const void* data);
 extern bool list_insert_node_at_index(list_t* list, size_t index, const void* data);
+extern bool list_insert_node_at_front(list_t* list, const void* data, const void* data);
+extern bool list_insett_node_at_later(list_t* list, const void* data, const void* data);
 
 extern bool list_delete_node(list_t* list, list_node_t* node);
 extern bool list_delete_node_at_index(list_t* list, size_t index);
@@ -95,6 +97,8 @@ extern list_iterator_t* list_iterator_next_iterator(list_iterator_t* iterator);
 extern void list_iterator_destroy(list_iterator_t* iterator);
 
 #define list_size(list) ((list)->size)
+#define list_iterator_null(iterator) ((iterator)->next)
+#define list_iterator_data(iterator) ((iterator)->next->data )
 #ifdef __cplusplus
 }
 #endif

@@ -214,14 +214,56 @@ extern bool list_insert_node_at_index(list_t* list, size_t index, const void* da
 	}
 
 	list_node_t* new_node = NULL;
-	if ((new_node = (list_node_t *)LIST_MALLOC(sizeof(list_node_t))) == NULL)
+	if ((new_node = list_node_create(list, data)) == NULL)
 	{
 		errno = ENOMEM;
 		return false;
 	}
-	new_node->data = data;
 
-	if (index < 0) //after tne reciprocal index
+	list_iterator_t* iterator = NULL;
+	if (index < 0)
+	{
+		if (-1 == index)
+		{
+			LIST_FREE(new_node);
+			list_append(list, data);
+			return true;
+		}
+		iterator = list_iterator_create(list, LIST_TAIL);
+		while (index < -1 && 
+		(list_iterator_null(iterator)) != NULL)
+		{
+			++index;	
+			iterator = list_iterator_next_iterator(iterator);
+		}
+		new_node->next = list_iterator_null(iterator)->next;
+		new_node->prev = list_iterator_null(iterator);
+		list_iterator_null(iterator)->next->prev = new_node;
+		list_iterator_null(iterator)->next = new_node;	
+		++list->len;
+	}
+	else if (1 == index)
+	{
+		LIST_FREE(new_node); // new_node->data?
+		list_prepend(list, data);
+		return true;
+	}
+	else
+	{
+		iterator = list_iterator_create(list, LIST_HEAD);
+		while (index > 1 &&
+		(list_iterator_null(iterator)) != NULL)	
+		{
+			--index;
+			iterator = list_iterator_next_iterator(iterator);
+		}
+		new_node->next = list_iterator_null(iterator);
+		new_node->prev = list_iterator_null(iterator)->prev;
+		list_iterator_null(iterator)->prev->next = new_node;
+		list_iterator_null(iterator)->prev = new_node;
+		++list->len;
+	}
+/*	if (index < 0) //after the reciprocal index
 	{
 		if (-1 == index)
 		{
@@ -262,7 +304,7 @@ extern bool list_insert_node_at_index(list_t* list, size_t index, const void* da
 		current->prev->next = new_node;
 		current->prev = new_node;
 		++list->len;
-	}
+	}*/
 	return true;	
 }
 
@@ -390,7 +432,7 @@ extern int list_delete_node_by_data(list_t* list, void* data)
 	return index;
 }
 
-static list_iterator_t* list_iterater_create(list_t* list, list_direction_t direction)
+extern  list_iterator_t* list_iterater_create(list_t* list, list_direction_t direction)
 {
 	list_node_t* node = direction == LIST_HEAD
 	? list->head
@@ -413,7 +455,7 @@ static list_iterator_t* list_iterator_create_frome_node(list_node_t* node, list_
 	return iterator;
 }
 
-static list_node_t* list_iterator_next(list_iterator_t* iterator)
+extern list_node_t* list_iterator_next(list_iterator_t* iterator)
 {
 	list_node_t* node = NULL;
 	
@@ -423,8 +465,23 @@ static list_node_t* list_iterator_next(list_iterator_t* iterator)
 
 	return node;
 }
-	
-static void list_iterator_destroy(list_iterator_t* iterator)
+/*	iterator = list_iterator_create(list);
+ *	while (list_iterator_null(iterator) != NULL)
+ *	{
+ *		doSomethingWith(list_iterator_data(iterator));
+ *		iterator = list_iterator_next_iterator(iterator);
+ *	}
+ *
+ */
+extern list_iterator_t* list_iterator_next_iterator(list_iterator_t* iterator)
+{
+	iterator->next = iterator->direction == LIST_HEAD
+	? iterator->next->next
+	: iterator->next->prev;
+
+	return iterator;
+}	
+extern void list_iterator_destroy(list_iterator_t* iterator)
 {
 	LIST_FREE(iterator);
 }
