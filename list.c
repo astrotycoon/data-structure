@@ -205,12 +205,11 @@ extern bool list_insert_data_at_front(list_t* list, size_t index, const void* da
 static bool list_insert_node_at_after(list_t* list, list_node_t* old_node, const void* data)
 {
 	list_nodt_t* new_node = NULL;
-	if ((new_node = (list_node_t *)LIST_MALLOC(sizeof(list_node_t))) == NULL)
+	if ((new_node = list_node_create(list, data)) == NULL)
 	{
 		errno = ENOMEM;
-		return false;
+		rturn false;
 	}
-	new_node->data = data;
 
 	new_node->next = old_node->next;
 	new_node->prev = old_node;
@@ -227,7 +226,17 @@ static bool list_insert_node_at_after(list_t* list, list_node_t* old_node, const
 	return true;
 }
 
-extern bool list_insert_data_at
+extern bool list_insert_data_at_after(list_t* list, size_t index, const void* data)
+{
+	if (NULL == list || NULL == data || 0 == index)
+	{
+		errno = EINVAL;
+		return false;
+	}
+	
+	
+
+}	
 extern bool list_insert_node_at_index(list_t* list, size_t index, const void* data)
 {
 	if (NULL == list || 0 == list->len ||  NULL == data)
