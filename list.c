@@ -258,7 +258,7 @@ extern bool list_insert_data_at_after(list_t* list, size_t index, const void* da
 	return true;
 }	
 
-extern bool list_insert_node_at_index(list_t* list, size_t index, const void* data)
+/*extern bool list_insert_node_at_index(list_t* list, size_t index, const void* data)
 {
 	if (NULL == list || 0 == list->len ||  NULL == data)
 	{
@@ -315,7 +315,7 @@ extern bool list_insert_node_at_index(list_t* list, size_t index, const void* da
 		list_iterator_null(iterator)->prev->next = new_node;
 		list_iterator_null(iterator)->prev = new_node;
 		++list->len;
-	}
+	}*/
 /*	if (index < 0) //after the reciprocal index
 	{
 		if (-1 == index)
