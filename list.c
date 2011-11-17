@@ -16,7 +16,7 @@ static list_node_t* list_node_create(list_t* list, void* data)
 
 	node_ret->prev = NULL;
 	node_ret->next = NULL;
-	node_ret->data = list->createnode(data);
+	node_ret->data = list->createdata(data);
 	if (NULL == node_ret->data)
 	{
 		LIST_FREE(node_ret);
@@ -28,9 +28,10 @@ static list_node_t* list_node_create(list_t* list, void* data)
 
 /* on error, NULL is returned. Othersize the pointer to the new list */
 extern list_t* list_create(
-			void* (*createnode)(void* data),
-			void  (*dstroy)(void* data),
-			int   (*match)(void* data1, void* data2))
+			void* (*createdata)(void* data),
+			void  (*deletedata)(void* data),
+			int   (*match)(void* data1, void* data2)
+			void  (*print)(void* data))
 {
 	list_t* list_ret = NULL;
 
@@ -43,9 +44,10 @@ extern list_t* list_create(
 	list_ret->len = 0;
 	list_ret->head = NULL;
 	list_ret->tail = NULL;
-	list_ret->Lcreatenode = createnode;
-	list_ret->Ldestroy = destroy;
+	list_ret->Lcreatedata = createdata;
+	list_ret->Ldeletedata = deletedata;
 	list_ret->Lmatch = match;
+	list_ret->Lprint = print;
 
 	return list_ret;
 }
@@ -142,21 +144,14 @@ extern bool list_append(list_t* list, void* data)
 }
 
 /* insert data into list "list" in the order before "old_node" */
-extern bool list_insert_node_at_front(list_t* list, list_node_t* old_node, const void* data)
+static bool list_insert_node_at_front(list_t* list, list_node_t* old_node, const void* data)
 {
-	if (NULL == list || NULL == old_node || NULL == data)
-	{
-		errno = EINVAL;
-		return false;
-	}
-
 	list_node_t* new_node = NULL;
-	if ((new_node = (list_node_t *)LIST_MALLOC(list_node_t)) == NULL)
+	if ((new_node = list_node_create(list, data)) == NULL)
 	{
 		errno = ENOMEM;
 		return false;
 	} 
-	newnode->data = data;
 
 	new_node->next = old_node;
 	new_node->prev = old_node->prev;
@@ -173,15 +168,42 @@ extern bool list_insert_node_at_front(list_t* list, list_node_t* old_node, const
 	return true;
 }
 
-/* insert data into list "list" in the order after "old_node"*/
-extern bool list_insert_node_at_after(list_t* list, list_node_t* old_node, const void* data)
+extern bool list_insert_data_at_front(list_t* list, size_t index, const void* data)
 {
-	if (NULL == list || NULL == old_node || NULL == data)
+	if (NULL == list || NULL == data || 0 == index)
 	{
 		errno = EINVAL;
-		return false;
+		rturn false;
 	}
 	
+	list
+	if (index < 0)
+	{
+		list_node_t* current = list->tail;
+		while (index < -1)
+		{
+			current = current->prev;
+			++index;
+		}
+		list_insert_node_at_front(list, current, data);
+	}
+	else
+	{
+		list_node_t* current = list->head;
+		while (index > 1)
+		{
+			current = current->next;
+			--index;
+		}
+		list_insert_node_at_front(list, current, data);
+	}
+	
+	return true;
+}
+
+/* insert data into list "list" in the order after "old_node"*/
+static bool list_insert_node_at_after(list_t* list, list_node_t* old_node, const void* data)
+{
 	list_nodt_t* new_node = NULL;
 	if ((new_node = (list_node_t *)LIST_MALLOC(sizeof(list_node_t))) == NULL)
 	{
@@ -205,6 +227,7 @@ extern bool list_insert_node_at_after(list_t* list, list_node_t* old_node, const
 	return true;
 }
 
+extern bool list_insert_data_at
 extern bool list_insert_node_at_index(list_t* list, size_t index, const void* data)
 {
 	if (NULL == list || 0 == list->len ||  NULL == data)

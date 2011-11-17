@@ -30,11 +30,12 @@ typedef struct list
 	list_node_t* head;
 	list_node_t* tail;
 	void* (*Lcreatedata)(void* data);   			/* create node              */
-	void  (*Ldeletedata)(void* data);				/* delete node      */
+	void  (*Ldeletedata)(void* data);			/* delete node              */
 	int   (*Lmatch)(const void* data1,const void* data2); 	/* data1 < data2, return -1 */
 								/* data1 == data2, return 0 */
 								/* data1 > data2, reruen 1  */
 	void* (*Ldupdata)(void* data);				/* copy data                */
+	void  (*Lprint)(void* data);				/* print the data           */
 }list_t;
 
 /* list_iterator_t direction */
@@ -56,9 +57,10 @@ static list_node_t* list_node_create(list_t* list, void* data);
 
 /* list_t prototypes */
 extern list_t* list_create(
-			void* (*createnode)(void* data),
-			void  (*dstroy)(void* data),
-			int   (*match)(void* data1, void* data2));
+			voi   (*createdata)(void* data),
+			void  (*deletedata)(void* data),
+			int   (*match)(void* data1, void* data2)
+			void  (*print)(void* data));
 
 extern void list_destroy(list_t* list);
 
@@ -67,9 +69,9 @@ extern bool list_append(list_t* list, void* data);
 
 //extern bool list_insert_node_at_front(list_t* list, list_node_t* old_node, const void* data);
 //extern bool list_insett_node_at_later(list_t* list, list_node_t* old_node, const void* data);
-extern bool list_insert_node_at_index(list_t* list, size_t index, const void* data);
-extern bool list_insert_node_at_front(list_t* list, const void* data, const void* data);
-extern bool list_insett_node_at_later(list_t* list, const void* data, const void* data);
+//extern bool list_insert_node_at_index(list_t* list, size_t index, const void* data);
+extern bool list_insert_data_at_front(list_t* list, size_t index, const void* data);
+extern bool list_insett_data_at_later(list_t* list, size_t index, const void* data);
 
 extern bool list_delete_node(list_t* list, list_node_t* node);
 extern bool list_delete_node_at_index(list_t* list, size_t index);
@@ -85,7 +87,6 @@ extern list_t* list_duplicate(list_t* list);
 
 extern list_t* list_reversal(list_t* list);
 
-extern list_t* list_sort(list_t* list);
 /* list_iterater_t prototypes */
 extern list_iterator_t* list_iterator_create(list_t* list, list_direction_t direaction);
 
@@ -96,7 +97,14 @@ extern list_iterator_t* list_iterator_next_iterator(list_iterator_t* iterator);
 
 extern void list_iterator_destroy(list_iterator_t* iterator);
 
-#define list_size(list) ((list)->size)
+#define Lhead(list)		((list)->head)
+#define Ltail(list)		((list)->tail)
+#define Node_Count(list) 	((list)->len)
+#define Create_Data(list)	((list)->Lcreatedata)
+#define Celete_Data(list)	((list)->Ldeletedata)
+#define Match(list)		((list)->Lmatch)
+#define Print(list)		((list)->Lprint)
+
 #define list_iterator_null(iterator) ((iterator)->next)
 #define list_iterator_data(iterator) ((iterator)->next->data )
 #ifdef __cplusplus
