@@ -234,9 +234,30 @@ extern bool list_insert_data_at_after(list_t* list, size_t index, const void* da
 		return false;
 	}
 	
-	
+	if (index < 1)
+	{
+		list_node_t* current = list->tail;
+		while (index < -1)
+		{
+			current = current->prev;
+			++index;
+		}
+		list_insert_node_at_after(list, current, data);
+	}	
+	else
+	{
+		list_node_t* current = list->head;
+		while (index > 1)
+		{
+			current = current->next;
+			--index;
+		}
+		list_insert_node_at_after(list, current, data);
+	}
 
+	return true;
 }	
+
 extern bool list_insert_node_at_index(list_t* list, size_t index, const void* data)
 {
 	if (NULL == list || 0 == list->len ||  NULL == data)

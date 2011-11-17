@@ -68,8 +68,8 @@ extern bool list_prepend(list_t* list, void* data);
 extern bool list_append(list_t* list, void* data);
 
 //extern bool list_insert_node_at_front(list_t* list, list_node_t* old_node, const void* data);
-//extern bool list_insett_node_at_later(list_t* list, list_node_t* old_node, const void* data);
-//extern bool list_insert_node_at_index(list_t* list, size_t index, const void* data);
+static bool list_insett_node_at_later(list_t* list, list_node_t* old_node, const void* data);
+static bool list_insert_node_at_index(list_t* list, size_t index, const void* data);
 extern bool list_insert_data_at_front(list_t* list, size_t index, const void* data);
 extern bool list_insett_data_at_later(list_t* list, size_t index, const void* data);
 
