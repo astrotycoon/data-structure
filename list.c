@@ -579,7 +579,7 @@ extern void* list_find_by_index(list_t* list, size_t index)
 		return NULL;
 	}
 	
-/*	list_node_t* current = NULL;
+	list_node_t* current = NULL;
 	if (index < 0)
 	{
 		current = list->tail;
@@ -599,9 +599,7 @@ extern void* list_find_by_index(list_t* list, size_t index)
 		}
 	}
 	
-	return current;*/
-
-	
+	return current;
 }
 
 extern list_t* list_duplicate(list_t* list)
