@@ -4,7 +4,7 @@
 #include <errno.h>
 
 /* on error, NULL is returned. Othersize the pointer to the new list_node */
-extern list_node_t* list_node_create(list_t* list, void* data)
+static list_node_t* list_node_create(list_t* list, void* data)
 {
 	list_node_t* node_ret = NULL;
 
@@ -84,13 +84,11 @@ extern bool list_prepend(list_t* list, void* data)
 	}
 
 	list_node_t* new_node = NULL;
-	if ((new_node = (list_node_t *)LIST_MALLOC(sizeof(list_node))) == NULL)
+	if ((new_node = list_node_create(list, data)) == NULL)
 	{
 		errno = ENOMEM;
 		return false;
-
 	}
-	new_node->data = data;
 	
 	if (list->len)
 	{
@@ -119,12 +117,11 @@ extern bool list_append(list_t* list, void* data)
 	}
 	
 	list_node_t* new_node = NULL;
-	if ((new_node = (list_node_t *)LIST_MALLOC(sizeof(list_node))) == NULL)
+	if ((new_node = list_node_create(list, data)) == NULL)
 	{
 		errno = ENOMEM;
 		return false;
 	}
-	new_node->data = data;
 
 	if (list->len)
 	{
@@ -485,37 +482,39 @@ extern bool list_update_node_at_index(list_t* list, size_t index, void* data)
 	return true;
 }
 
-extern list_node_t* list_find_by_data(list_t* list, void* data)
+/* on error, 0 is returned. Otherwise the index of data id returned */
+extern int list_find_by_data(list_t* list, void* data)
 {
 	if (NULL == list || NULL == data)
 	{
 		errno = EINVAL;
-		return NULL;
+		return 0;
 	}
 
+	int index = 0;
 	list_node_t* node = NULL;
 	list_iterator_t* iterator = NULL;
 	iterator = list_iterator_create(list, LIST_HEAD);
 	while ((node = list_iterator_next(iterator)) != NULL)
 	{
+		++index;
 		if (list->match)
 		{
 			if (0 == list->match(node->data, data))
-				return node;
+				return index;
 		}
 		else
 		{
 			if (node->data == data)
 			{
-				return node;
+				return index;
 			}
 		}
 	}
-	
-	return NULL;
+	return 0;;
 }
 
-extern list_node_t* list_find_by_index(list_t* list, size_t index)
+extern void* list_find_by_index(list_t* list, size_t index)
 {
 	if (NULL == list)
 	{
@@ -523,7 +522,7 @@ extern list_node_t* list_find_by_index(list_t* list, size_t index)
 		return NULL;
 	}
 	
-	list_node_t* current = NULL;
+/*	list_node_t* current = NULL;
 	if (index < 0)
 	{
 		current = list->tail;
@@ -543,7 +542,9 @@ extern list_node_t* list_find_by_index(list_t* list, size_t index)
 		}
 	}
 	
-	return current;
+	return current;*/
+
+	
 }
 
 extern list_t* list_duplicate(list_t* list)

@@ -52,7 +52,7 @@ typedef list_iterator
 }list_iterator_t;
 
 /* list_node_t prototypes */
-extern list_node_t* list_node_create(list_t* list, void* data);
+static list_node_t* list_node_create(list_t* list, void* data);
 
 /* list_t prototypes */
 extern list_t* list_create(
@@ -76,8 +76,8 @@ extern int list_delete_node_by_data(list_t* list, void* data);
 extern bool list_update_node(list_t* list, list_node_t* dst, list_node_t* src);
 extern bool list_update_node_at_index(list_t* list, size_t index, void * data);
 
-extern list_nodt_t* list_find_by_data(list_t* list, const void* data);
-extern list_node_t* list_find_by_index(list_t* list, size_t index);
+extern int list_find_by_data(list_t* list, const void* data);
+extern void* list_find_by_index(list_t* list, size_t index);
 
 extern list_t* list_duplicate(list_t* list);
 
@@ -85,13 +85,14 @@ extern list_t* list_reversal(list_t* list);
 
 extern list_t* list_sort(list_t* list);
 /* list_iterater_t prototypes */
-static list_iterator_t* list_iterator_create(list_t* list, list_direction_t direaction);
+extern list_iterator_t* list_iterator_create(list_t* list, list_direction_t direaction);
 
 static list_iterator_t* list_iterator_create_fome_node(list_node_t* node, list_iterator_t direction);
 
-static list_node_t* list_iterator_next(list_iterator_t* iterator);
+extern list_node_t* list_iterator_next_node(list_iterator_t* iterator);
+extern list_iterator_t* list_iterator_next_iterator(list_iterator_t* iterator);
 
-static void list_iterator_destroy(list_iterator_t* iterator);
+extern void list_iterator_destroy(list_iterator_t* iterator);
 
 #define list_size(list) ((list)->size)
 #ifdef __cplusplus
