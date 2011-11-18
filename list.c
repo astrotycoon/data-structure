@@ -230,7 +230,7 @@ static bool list_insert_node_at_after(list_t* list, list_node_t* old_node, const
 extern bool list_insert_data_at_after(list_t* list, size_t index, const void* data)
 {
 	if (NULL == list || NULL == data || 0 == index
- 	|| index > list->len + 1 || index < ~(list->len + 1))
+ 	|| index > list->len || index < ~(list->len))
 	{
 		errno = EINVAL;
 		return false;
@@ -361,7 +361,7 @@ extern bool list_insert_data_at_after(list_t* list, size_t index, const void* da
 	return true;	
 }
 
-extern bool list_delete_node(list_t* list, list_node_t* node)
+static bool list_delete_node(list_t* list, list_node_t* node)
 {
 	if (NULL == list || NULL == node)
 	{
@@ -448,18 +448,19 @@ extern bool list_delete_node(list_t* list, list_node_t* node)
 	return true;
 }*/
 
-/* index can not be 1 and 0 */
-extern bool list_delete_data_at_front(list_t* list, size_t index)
+extern bool list_delete_data_by_index(list_t* list, size_t index)
 {
-	if (NULL == list || 0 == index || 1 == index)
-	{	
+	if (NULL == list || 0 == index
+	|| index > list->len || index < ~list->len)
+	{
 		errno = EINVAL;
 		return false;
 	}
 
 	if (index < 0)
 	{
-		list_node_t* current = list->tail;
+		lsit_node_t* current = list->tail;
+
 		while (index++ < -1)
 		{
 			current = current->prev;
@@ -469,16 +470,16 @@ extern bool list_delete_data_at_front(list_t* list, size_t index)
 	else
 	{
 		list_node_t* current = list->head;
+
 		while (index-- > 1)
 		{
-			current = current->next
+			current = current->next;
 		}
 		list_delete_node(list, current);
 	}
-
+	
 	return true;
-}	
-extern bool list_delete_data_at_after(list_t* list, size_t index)
+}
 /* On error, 0 is returnd, or a non-zere is returnd */
 extern int list_delete_node_by_data(list_t* list, void* data)
 {

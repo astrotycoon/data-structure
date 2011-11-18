@@ -71,14 +71,15 @@ static bool list_insert_node_at_front(list_t* list, list_node_t* old_node, const
 static bool list_insett_node_at_later(list_t* list, list_node_t* old_node, const void* data);
 extern bool list_insert_data_at_front(list_t* list, size_t index, const void* data);
 extern bool list_insett_data_at_later(list_t* list, size_t index, const void* data);
---------------------------------------------------------------------------------------------------------------------
+
 static bool list_delete_node(list_t* list, list_node_t* node);
-extern bool list_delete_data_at_front(list_t* list, size_t index);
-extern bool list_delete_data_at_after(list_t* list, size_t index);
+extern bool list_delete_data_by_index(list_t* list, size_t index);
 extern int list_delete_node_by_data(list_t* list, void* data);
---------------------------------------------------------------------------------------------------------------------
-extern bool list_update_node(list_t* list, list_node_t* dst, list_node_t* src);
-extern bool list_update_node_at_index(list_t* list, size_t index, void * data);
+
+//extern bool list_update_node(list_t* list, list_node_t* dst, list_node_t* src);
+//extern bool list_update_node_at_index(list_t* list, size_t index, void * data);
+static bool list_update_node(list_t* list, list_node_t* dst, list_node_t* src);
+extern bool list_update_data(list_t* list, size_t index, void* data);
 
 extern int list_find_by_data(list_t* list, const void* data);
 extern void* list_find_by_index(list_t* list, size_t index);
