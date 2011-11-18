@@ -54,6 +54,7 @@ extern list_t* list_create(
 	return list_ret;
 }
 
+/* destroy the list*/
 extern void list_destroy(list_t* list)
 {
 	if (NULL == list)
@@ -79,6 +80,7 @@ extern void list_destroy(list_t* list)
 	LIST_FREE(list);
 }
 
+/* insert data into the list head */
 extern bool list_prepend(list_t* list, void* data)
 {
 	if (NULL == list || NULL == data)
@@ -111,7 +113,8 @@ extern bool list_prepend(list_t* list, void* data)
 
 	return true;
 }
-	
+
+/* insert data into the end of list */	
 extern bool list_append(list_t* list, void* data)
 {
 	if (NULL == list || NULL == node)
@@ -145,7 +148,7 @@ extern bool list_append(list_t* list, void* data)
 	return true;
 }
 
-/* insert data into list "list" in the order before "old_node" */
+/* insert node into list "list" in the order before "old_node" */
 static bool list_insert_node_at_front(list_t* list, list_node_t* old_node, const void* data)
 {
 	list_node_t* new_node = NULL;
@@ -167,6 +170,31 @@ static bool list_insert_node_at_front(list_t* list, list_node_t* old_node, const
 	}
 	++list->len;
 
+	return true;
+}
+
+/* insert node into list "list" in the order after "old_node"*/
+static bool list_insert_node_at_after(list_t* list, list_node_t* old_node, const void* data)
+{
+	list_nodt_t* new_node = NULL;
+	if ((new_node = list_node_create(list, data)) == NULL)
+	{
+		errno = ENOMEM;
+		rturn false;
+	}
+
+	new_node->next = old_node->next;
+	new_node->prev = old_node;
+	if (old_node == list->tail)
+	{
+		list->tail = new_node;
+	}
+	if (new_node->next != NULL)
+	{
+		new_node->next->prev = new_node;
+	}
+
+	++list->len;
 	return true;
 }
 
@@ -201,31 +229,6 @@ extern bool list_insert_data_at_front(list_t* list, size_t index, const void* da
 		list_insert_node_at_front(list, current, data);
 	}
 	
-	return true;
-}
-
-/* insert data into list "list" in the order after "old_node"*/
-static bool list_insert_node_at_after(list_t* list, list_node_t* old_node, const void* data)
-{
-	list_nodt_t* new_node = NULL;
-	if ((new_node = list_node_create(list, data)) == NULL)
-	{
-		errno = ENOMEM;
-		rturn false;
-	}
-
-	new_node->next = old_node->next;
-	new_node->prev = old_node;
-	if (old_node == list->tail)
-	{
-		list->tail = new_node;
-	}
-	if (new_node->next != NULL)
-	{
-		new_node->next->prev = new_node;
-	}
-
-	++list->len;
 	return true;
 }
 
@@ -360,6 +363,7 @@ extern int list_delete_node_by_data(list_t* list, void* data)
 	return index;
 }
 
+/* create list iterator */
 extern  list_iterator_t* list_iterater_create(list_t* list, list_direction_t direction)
 {
 	list_node_t* node = direction == LIST_HEAD
@@ -383,17 +387,9 @@ static list_iterator_t* list_iterator_create_frome_node(list_node_t* node, list_
 	return iterator;
 }
 
-extern list_node_t* list_iterator_next(list_iterator_t* iterator)
-{
-	list_node_t* node = NULL;
-	
-	node = iterator->direction == LIST_HEAD
-	? iterator->next->next
-	: iterator->next->prev;
-
-	return node;
-}
-/*	iterator = list_iterator_create(list);
+/*	the classical usage pattern is:
+ *
+ *	iterator = list_iterator_create(list);
  *	while (list_iterator_null(iterator) != NULL)
  *	{
  *		doSomethingWith(list_iterator_data(iterator));
@@ -522,11 +518,11 @@ extern list_t* list_duplicate(list_t* list)
 	list_iterator_t* iterator = NULL;
 
 	if ((copy_list = list_create(
-					list->Lcreatedata,
-					list->Ldeletedate,
-					list->Lmatch,
-					list->Ldupdata,
-					list->Lprint)) == NULL)
+			list->Lcreatedata,
+			list->Ldeletedate,
+			list->Lmatch,
+			list->Ldupdata,
+			list->Lprint)) == NULL)
 	{
 		errno = ENOMEM;
 		return NULL;
