@@ -702,15 +702,24 @@ extern list_t* list_duplicate(list_t* list)
 	list_t* copy_list = NULL;
 	list_iterator_t* iterator = NULL;
 
-	if ((copy_list = (list_t *)LIST_MALLOC(sizeof(list_t))) == NULL)
+/*	if ((copy_list = (list_t *)LIST_MALLOC(sizeof(list_t))) == NULL)
 	{
 		errno = ENOMEM;
 		return NULL;
-	}
+	}*/
 	copy_list->destroy = list->destroy;
 	copy_list->match = list->match;
 	copy_list->duplicate = list->duplicate;
 
+	if ((copy_list = list_create(
+					list->createdata,
+					list->deletedate,
+					list->match,
+					list->print)) == NULL)
+	{
+		errno = ENOMEM;
+		return NULL;
+	}
 	iterator = list_iterator_create(list, LIST_HEAD);
 	while (list_iterator_node(iterator) != NULL)
 	{
