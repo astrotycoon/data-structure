@@ -260,109 +260,6 @@ extern bool list_insert_data_at_after(list_t* list, size_t index, const void* da
 	return true;
 }	
 
-/*extern bool list_insert_node_at_index(list_t* list, size_t index, const void* data)
-{
-	if (NULL == list || 0 == list->len ||  NULL == data)
-	{
-		errno = EINVAL;
-		return false;
-	}
-
-	list_node_t* new_node = NULL;
-	if ((new_node = list_node_create(list, data)) == NULL)
-	{
-		errno = ENOMEM;
-		return false;
-	}
-
-	list_iterator_t* iterator = NULL;
-	if (index < 0)
-	{
-		if (-1 == index)
-		{
-			LIST_FREE(new_node);
-			list_append(list, data);
-			return true;
-		}
-		iterator = list_iterator_create(list, LIST_TAIL);
-		while (index < -1 && 
-		(list_iterator_null(iterator)) != NULL)
-		{
-			++index;	
-			iterator = list_iterator_next_iterator(iterator);
-		}
-		new_node->next = list_iterator_null(iterator)->next;
-		new_node->prev = list_iterator_null(iterator);
-		list_iterator_null(iterator)->next->prev = new_node;
-		list_iterator_null(iterator)->next = new_node;	
-		++list->len;
-	}
-	else if (1 == index)
-	{
-		LIST_FREE(new_node); // new_node->data?
-		list_prepend(list, data);
-		return true;
-	}
-	else
-	{
-		iterator = list_iterator_create(list, LIST_HEAD);
-		while (index > 1 &&
-		(list_iterator_null(iterator)) != NULL)	
-		{
-			--index;
-			iterator = list_iterator_next_iterator(iterator);
-		}
-		new_node->next = list_iterator_null(iterator);
-		new_node->prev = list_iterator_null(iterator)->prev;
-		list_iterator_null(iterator)->prev->next = new_node;
-		list_iterator_null(iterator)->prev = new_node;
-		++list->len;
-	}*/
-/*	if (index < 0) //after the reciprocal index
-	{
-		if (-1 == index)
-		{
-			LIST_FREE(new_node);
-			list_append(list, data);
-			return true;
-		}
-		
-		list_node_t* current = list->tail;
-		while (index < -1)
-		{
-			current = current->prev;
-			++index;
-		}
-		
-		new_node->prev = current;
-		new_node->next = current->next;
-		current->next->prev = new_node;
-		current->next = new_node;
-		++list->len;
-	}
-	else if (index == 1)
-	{
-		LIST_FREE(new_node);
-		list_prepeng(list, data);
-		return true;
-	}
-	else
-	{
-		list_node_t* current = list->head;
-		while (index > 1)
-		{
-			current = current->next;
-			--index;
-		}
-		new_node->next = current;
-		new_node-prev = current->prev;
-		current->prev->next = new_node;
-		current->prev = new_node;
-		++list->len;
-	}*/
-	return true;	
-}
-
 static bool list_delete_node(list_t* list, list_node_t* node)
 {
 	if (NULL == list || NULL == node)
@@ -388,67 +285,6 @@ static bool list_delete_node(list_t* list, list_node_t* node)
 	
 	return true;	
 }
-
-/*extern bool list_delete_at_index(list_t* list, size_t index)
-{
-	if (NULL == list)
-	{
-		errno = EINVAL;
-		return false;
-	}
-
-	list_node_t* current = NULL;
-	if (index < 0)
-	{
-		current = list->tail;
-		
-		while (index < -1)
-		{
-			current = current->prev;
-			++index;
-		}
-		
-		if (current == list->tail)
-		{
-			current->prev->next = NULL;
-			list->tail = current->prev;
-			if (list->destroy)
-				list->destroy(current->data);
-			LIST_FREE(current);
-			--list->len;
-			return true;
-		}
-	}
-	else
-	{
-		current = list->head;
-
-		while (index > 1)
-		{
-			current = current->next;
-			--index;
-		}
-		
-		if (current == list->head)
-		{
-			current->next->prev = NULL;
-			list->head = current->next;
-			if (list->destroy)
-				list->destroy(current->data);
-			LIST_FREE(current);
-			--list->len;
-			return true;
-		}
-	}
-
-	current->prev->next = current->next;
-	current->next->prev = current->prev;
-	if (list->destroy)
-		list->destroy(current->data);
-	LIST_FREE(curent);
-	--list->len;
-	return true;
-}*/
 
 extern bool list_delete_data_by_index(list_t* list, size_t index)
 {
@@ -572,31 +408,12 @@ extern list_iterator_t* list_iterator_next_iterator(list_iterator_t* iterator)
 	: iterator->next->prev;
 
 	return iterator;
-}	
+}
+	
 extern void list_iterator_destroy(list_iterator_t* iterator)
 {
 	LIST_FREE(iterator);
 }
-
-/*static bool list_update_node(list_t* list, list_node_t* dst, list_node_t* src)
-{
-	if (NULL == list || NULL == dst || NULL == src)
-	{
-		errno = EINVAL;
-		return NULL;
-	}
-	
-	src->next = dst->next;
-	src->prev = dst->prev;
-	dst->prev->next = src;
-	dst->next->prev = src;
-
-	if (dst->destroy)
-		dst->destroy(dst->destroy);
-	LIST_FREE(dst);
-	
-	return true;
-}*/
 
 extern bool list_update_data(list_t* list, size_t index, void* data)
 {
@@ -703,15 +520,6 @@ extern list_t* list_duplicate(list_t* list)
 	}
 	list_t* copy_list = NULL;
 	list_iterator_t* iterator = NULL;
-
-/*	if ((copy_list = (list_t *)LIST_MALLOC(sizeof(list_t))) == NULL)
-	{
-		errno = ENOMEM;
-		return NULL;
-	}
-	copy_list->destroy = list->destroy;
-	copy_list->match = list->match;
-	copy_list->duplicate = list->duplicate;*/
 
 	if ((copy_list = list_create(
 					list->Lcreatedata,
