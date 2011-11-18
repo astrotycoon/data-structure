@@ -106,7 +106,7 @@ extern void list_iterator_destroy(list_iterator_t* iterator);
 #define Match(list)		((list)->Lmatch)
 #define Print(list)		((list)->Lprint)
 
-#define list_iterator_null(iterator) ((iterator)->next)
+#define list_iterator_node(iterator) ((iterator)->next)
 #define list_iterator_data(iterator) ((iterator)->next->data)
 
 #ifdef __cplusplus

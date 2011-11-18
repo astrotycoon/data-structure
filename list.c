@@ -491,27 +491,32 @@ extern int list_delete_node_by_data(list_t* list, void* data)
 
 	int index = 0;
 	list_iterator_t* iterator = NULL;
-	list_node_t* node = NULL;
 	
 	iterator = list_iterator_create(list);	
 	
-	while ((node = list_iterator_next(iterator)) != NULL)
+	while (list_iterator_node(iterator) != NULL)
 	{
-		++index;
-		if (node->match)
+		if (list->match)
 		{
-			if (0 == node->match(node->data, data))
+			index++;
+			if (0 == list->match(list_iterator_data(iterator), data))
 			{
-				list_delete_node(list, node);
+				list_delete_node(list, list_iterator_node(iteraor));
+				list_iterator_destroy(iterator);
+				return index;
 			}
 		}
 		else
 		{
-			if (node->data == data)
+			index++;
+			if (list_iterator_data(iterator) == data)
 			{
-				list_delete_node(list, node);
+				list_delete_node(list, list_iterator_node(iterator));
+				list_iterator_destroy(iterator);
+				return index;
 			}
 		}
+		iterator = list_iterator_next_iterator(iterator);
 	}
 	list_iterator_destroy(itrator);
 	return index;
