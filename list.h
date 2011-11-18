@@ -93,7 +93,7 @@ extern list_iterator_t* list_iterator_create(list_t* list, list_direction_t dire
 
 static list_iterator_t* list_iterator_create_fome_node(list_node_t* node, list_iterator_t direction);
 
-extern list_node_t* list_iterator_next_node(list_iterator_t* iterator);
+//extern list_node_t* list_iterator_next_node(list_iterator_t* iterator);
 extern list_iterator_t* list_iterator_next_iterator(list_iterator_t* iterator);
 
 extern void list_iterator_destroy(list_iterator_t* iterator);
@@ -106,8 +106,8 @@ extern void list_iterator_destroy(list_iterator_t* iterator);
 #define Match(list)			((list)->Lmatch)
 #define Print(list)			((list)->Lprint)
 
-#define list_iterator_node(iterator) ((iterator)->next)
-#define list_iterator_data(iterator) ((iterator)->next->data)
+#define list_iterator_node(iterator) 	((iterator)->next)
+#define list_iterator_data(iterator) 	((iterator)->next->data)
 
 #ifdef __cplusplus
 }
