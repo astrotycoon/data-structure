@@ -98,13 +98,13 @@ extern list_iterator_t* list_iterator_next_iterator(list_iterator_t* iterator);
 
 extern void list_iterator_destroy(list_iterator_t* iterator);
 
-#define Lhead(list)		((list)->head)
-#define Ltail(list)		((list)->tail)
-#define Node_Count(list) 	((list)->len)
-#define Create_Data(list)	((list)->Lcreatedata)
-#define Celete_Data(list)	((list)->Ldeletedata)
-#define Match(list)		((list)->Lmatch)
-#define Print(list)		((list)->Lprint)
+#define Lhead(list)			((list)->head)
+#define Ltail(list)			((list)->tail)
+#define Node_Count(list) 		((list)->len)
+#define Create_Data(list)		((list)->Lcreatedata)
+#define Celete_Data(list)		((list)->Ldeletedata)
+#define Match(list)			((list)->Lmatch)
+#define Print(list)			((list)->Lprint)
 
 #define list_iterator_node(iterator) ((iterator)->next)
 #define list_iterator_data(iterator) ((iterator)->next->data)
