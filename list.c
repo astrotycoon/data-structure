@@ -776,4 +776,25 @@ extern list_t* list_reversal(list_t* list)
 	}
 
 	return list;
+}
+
+extern void list_reversal(list_t* list)
+{
+	if (NULL == list)
+	{
+		errno = EINVAL;
+		return;
+	}
+
+	iterator = list_iterator_create(list, LIST_HEAD);
+	
+	while (list_iterator_node(iterator) != NULL)
+	{
+		if (list->Lprint)
+		{
+			list->Lprint(list_iterator_data(iterator));
+		}
+
+		iterator = list_iterator_next_iterator(iterator);
+	}
 }	
