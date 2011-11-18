@@ -30,7 +30,8 @@ static list_node_t* list_node_create(list_t* list, void* data)
 extern list_t* list_create(
 			void* (*createdata)(void* data),
 			void  (*deletedata)(void* data),
-			int   (*match)(void* data1, void* data2)
+			int   (*match)(void* data1, void* data2),
+			void* (*dupdata)(void* data),
 			void  (*print)(void* data))
 {
 	list_t* list_ret = NULL;
@@ -706,16 +707,17 @@ extern list_t* list_duplicate(list_t* list)
 	{
 		errno = ENOMEM;
 		return NULL;
-	}*/
+	}
 	copy_list->destroy = list->destroy;
 	copy_list->match = list->match;
-	copy_list->duplicate = list->duplicate;
+	copy_list->duplicate = list->duplicate;*/
 
 	if ((copy_list = list_create(
-					list->createdata,
-					list->deletedate,
-					list->match,
-					list->print)) == NULL)
+					list->Lcreatedata,
+					list->Ldeletedate,
+					list->Lmatch,
+					list->Ldupdata,
+					list->Lprint)) == NULL)
 	{
 		errno = ENOMEM;
 		return NULL;
