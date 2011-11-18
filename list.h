@@ -78,7 +78,7 @@ extern int list_delete_node_by_data(list_t* list, void* data);
 
 //extern bool list_update_node(list_t* list, list_node_t* dst, list_node_t* src);
 //extern bool list_update_node_at_index(list_t* list, size_t index, void * data);
-static bool list_update_node(list_t* list, list_node_t* dst, list_node_t* src);
+//static bool list_update_node(list_t* list, list_node_t* dst, list_node_t* src);
 extern bool list_update_data(list_t* list, size_t index, void* data);
 
 extern int list_find_by_data(list_t* list, const void* data);

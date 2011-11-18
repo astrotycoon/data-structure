@@ -576,7 +576,7 @@ extern void list_iterator_destroy(list_iterator_t* iterator)
 	LIST_FREE(iterator);
 }
 
-extern bool list_update_node(list_t* list, list_node_t* dst, list_node_t* src)
+/*static bool list_update_node(list_t* list, list_node_t* dst, list_node_t* src)
 {
 	if (NULL == list || NULL == dst || NULL == src)
 	{
@@ -594,9 +594,9 @@ extern bool list_update_node(list_t* list, list_node_t* dst, list_node_t* src)
 	LIST_FREE(dst);
 	
 	return true;
-}
+}*/
 
-extern bool list_update_node_at_index(list_t* list, size_t index, void* data)
+extern bool list_update_data_by_index(list_t* list, size_t index, void* data)
 {
 	if (NULL == list || NULL == data)
 	{
@@ -608,24 +608,26 @@ extern bool list_update_node_at_index(list_t* list, size_t index, void* data)
 	if (index < 0)
 	{
 		current = list->tail;
-		while (index < -1)
+		while (index++ < -1)
 		{
 			current = current->prev;
-			++index;
 		}
 	}
 	else
 	{
 		current = list->head;
-		while (index > 1)
+		while (index-- > 1)
 		{
 			current = current->next;
-			--index;
 		}
 	}
 
+	if (list->deletedata)
+	{
+		list->deletedata(data);
+	}
 	current->data = data;
-	
+
 	return true;
 }
 
