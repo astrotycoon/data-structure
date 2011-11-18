@@ -492,7 +492,7 @@ extern int list_delete_node_by_data(list_t* list, void* data)
 	int index = 0;
 	list_iterator_t* iterator = NULL;
 	
-	iterator = list_iterator_create(list);	
+	iterator = list_iterator_create(list, LIST_HEAD);	
 	
 	while (list_iterator_node(iterator) != NULL)
 	{
@@ -596,7 +596,7 @@ extern void list_iterator_destroy(list_iterator_t* iterator)
 	return true;
 }*/
 
-extern bool list_update_data_by_index(list_t* list, size_t index, void* data)
+extern bool list_update_data(list_t* list, size_t index, void* data)
 {
 	if (NULL == list || NULL == data)
 	{
@@ -641,24 +641,24 @@ extern int list_find_by_data(list_t* list, void* data)
 	}
 
 	int index = 0;
-	list_node_t* node = NULL;
 	list_iterator_t* iterator = NULL;
 	iterator = list_iterator_create(list, LIST_HEAD);
-	while ((node = list_iterator_next(iterator)) != NULL)
+	while (list_iterator_node(iterator) != NULL)
 	{
 		++index;
 		if (list->match)
 		{
-			if (0 == list->match(node->data, data))
+			if (0 == list->match(list_iterator_data(iterator), data))
 				return index;
 		}
 		else
 		{
-			if (node->data == data)
+			if (list_iterator_data(iterator) == data)
 			{
 				return index;
 			}
 		}
+		iterator = list_iterator_next_iterator(iterator);
 	}
 	return 0;;
 }
@@ -675,23 +675,21 @@ extern void* list_find_by_index(list_t* list, size_t index)
 	if (index < 0)
 	{
 		current = list->tail;
-		while (index < -1)
+		while (index++ < -1)
 		{
 			current = current->prev;
-			++index;
 		}
 	}
 	else
 	{
 		current = list->head;
-		while (index > 1)
+		while (index-- > 1)
 		{
 			current = current->next;
-			--index;
 		}
 	}
 	
-	return current;
+	return current->data;
 }
 
 extern list_t* list_duplicate(list_t* list)
