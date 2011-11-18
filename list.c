@@ -778,7 +778,7 @@ extern list_t* list_reversal(list_t* list)
 	return list;
 }
 
-extern void list_reversal(list_t* list)
+extern void list_print(list_t* list)
 {
 	if (NULL == list)
 	{

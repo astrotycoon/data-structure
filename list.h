@@ -88,6 +88,8 @@ extern list_t* list_duplicate(list_t* list);
 
 extern list_t* list_reversal(list_t* list);
 
+extern void list_print(list_t* list);
+
 /* list_iterater_t prototypes */
 extern list_iterator_t* list_iterator_create(list_t* list, list_direction_t direaction);
 
