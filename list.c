@@ -237,20 +237,18 @@ extern bool list_insert_data_at_after(list_t* list, size_t index, const void* da
 	if (index < 1)
 	{
 		list_node_t* current = list->tail;
-		while (index < -1)
+		while (index++ < -1)
 		{
 			current = current->prev;
-			++index;
 		}
 		list_insert_node_at_after(list, current, data);
 	}	
 	else
 	{
 		list_node_t* current = list->head;
-		while (index > 1)
+		while (index-- > 1)
 		{
 			current = current->next;
-			--index;
 		}
 		list_insert_node_at_after(list, current, data);
 	}
@@ -387,7 +385,7 @@ extern bool list_delete_node(list_t* list, list_node_t* node)
 	return true;	
 }
 
-extern bool list_delete_at_index(list_t* list, size_t index)
+/*extern bool list_delete_at_index(list_t* list, size_t index)
 {
 	if (NULL == list)
 	{
@@ -446,8 +444,38 @@ extern bool list_delete_at_index(list_t* list, size_t index)
 	LIST_FREE(curent);
 	--list->len;
 	return true;
-}	
+}*/
 
+extern bool list_delete_data_at_front(list_t* list, size_t index)
+{
+	if (NULL == list || 0 == index)
+	{	
+		errno = EINVAL;
+		return false;
+	}
+
+	if (index < 0)
+	{
+		list_node_t* current = list->tail;
+		while (index++ < -1)
+		{
+			current = current->prev;
+		}
+		list_delete_node(list, current);
+	}
+	else
+	{
+		list_node_t* current = list->head;
+		while (index-- > 1)
+		{
+			current = current->next
+		}
+		list_delete_node(list, current);
+	}
+
+	return true;
+}	
+extern bool list_delete_data_at_after(list_t* list, size_t index)
 /* On error, 0 is returnd, or a non-zere is returnd */
 extern int list_delete_node_by_data(list_t* list, void* data)
 {
