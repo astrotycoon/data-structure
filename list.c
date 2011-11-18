@@ -701,7 +701,6 @@ extern list_t* list_duplicate(list_t* list)
 	}
 	list_t* copy_list = NULL;
 	list_iterator_t* iterator = NULL;
-	list_node_t* node = NULL;
 
 	if ((copy_list = (list_t *)LIST_MALLOC(sizeof(list_t))) == NULL)
 	{
@@ -713,13 +712,13 @@ extern list_t* list_duplicate(list_t* list)
 	copy_list->duplicate = list->duplicate;
 
 	iterator = list_iterator_create(list, LIST_HEAD);
-	while ((node = list_iterator_next(iterator)) != NULL)
+	while (list_iterator_node(iterator) != NULL)
 	{
 		void* data;
 		
 		if (list->duplicate)
 		{
-			data = list->duplicate(node->data);
+			data = list->duplicate(list_iterator_data(iterator));
 			if (NULL == data)
 			{
 				list_destroy(copy_list);
@@ -729,16 +728,17 @@ extern list_t* list_duplicate(list_t* list)
 		}
 		else
 		{
-			data = node->data;
+			data = list_iterator_data(iterator);
 		}
 
-		if (NULL == list_append(copy_list, data))
+		if (NULL == list_append(list_iterator_data(iterator), data))
 		{
 			
 			list_destroy(copy_list);
 			list_iterator_destroy(iterator);
 			return NULL;
 		}
+		iterator = list_iterator_next_iterator(iterator);
 	}
 
 	list_iterator_destroy(iterator);
