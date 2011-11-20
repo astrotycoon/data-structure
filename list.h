@@ -68,12 +68,12 @@ extern void list_destroy(list_t* list);
 extern bool list_prepend(list_t* list, void* data);
 extern bool list_append(list_t* list, void* data);
 
-static bool list_insert_node_at_front(list_t* list, list_node_t* old_node, const void* data);
-static bool list_insett_node_at_later(list_t* list, list_node_t* old_node, const void* data);
+//static bool list_insert_node_at_front(list_t* list, list_node_t* old_node, const void* data);
+//static bool list_insett_node_at_later(list_t* list, list_node_t* old_node, const void* data);
 extern bool list_insert_data_at_front(list_t* list, size_t index, const void* data);
 extern bool list_insett_data_at_later(list_t* list, size_t index, const void* data);
 
-static bool list_delete_node(list_t* list, list_node_t* node);
+//static bool list_delete_node(list_t* list, list_node_t* node);
 extern bool list_delete_data_by_index(list_t* list, size_t index);
 extern int list_delete_node_by_data(list_t* list, void* data);
 
@@ -95,7 +95,6 @@ extern void list_print(list_t* list);
 extern list_iterator_t* list_iterator_create(list_t* list, list_direction_t direaction);
 
 static list_iterator_t* list_iterator_create_fome_node(list_node_t* node, list_iterator_t direction);
-
 //extern list_node_t* list_iterator_next_node(list_iterator_t* iterator);
 extern list_iterator_t* list_iterator_next_iterator(list_iterator_t* iterator);
 
