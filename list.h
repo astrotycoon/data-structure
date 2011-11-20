@@ -57,7 +57,7 @@ static list_node_t* list_node_create(list_t* list, void* data);
 
 /* list_t prototypes */
 extern list_t* list_create(
-			void*  (*createdata)(void* data),
+			void* (*createdata)(void* data),
 			void  (*deletedata)(void* data),
 			int   (*match)(void* data1, void* data2)
 			void* (*dupdata)(void* data),

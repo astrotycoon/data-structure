@@ -32,7 +32,8 @@ extern list_t* list_create(
 			void  (*deletedata)(void* data),
 			int   (*match)(void* data1, void* data2),
 			void* (*dupdata)(void* data),
-			void  (*print)(void* data))
+			void  (*print)(void* data),
+			void* data)
 {
 	list_t* list_ret = NULL;
 
@@ -42,14 +43,19 @@ extern list_t* list_create(
 		return NULL;
 	}
 
-	list_ret->len = 0;
-	list_ret->head = NULL;
-	list_ret->tail = NULL;
+	list_ret->len = 1;
 	list_ret->Lcreatedata = createdata;
 	list_ret->Ldeletedata = deletedata;
 	list_ret->Lmatch = match;
 	list_ret->Ldupdata = dupdata;
 	list_ret->Lprint = print;
+	list_ret->head = list_node_create(list_ret, data);
+	if (NULL == list_ret->head)
+	{
+		LIST_FREE(list_ret);
+		return NULL;
+	}
+	list_ret->tail = list_ret->head;
 
 	return list_ret;
 }
