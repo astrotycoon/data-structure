@@ -15,6 +15,19 @@
 #include <errno.h>
 #include "queue.h"
 
+static p_q_node_t node_create(void *data)
+{
+	p_q_node_t new_node = NULL;
+	new_node = (p_q_node_t)malloc(sizeof(q_node_t));
+	if (NULL == new_node)
+	{
+		errno = ENOMEM;
+		return NULL;
+	}
+	new_node->data = data;
+	new_node->next = NULL;
+	return new_node;
+}
 p_queue_t queue_create(void)
 {
 	p_queue_t queue = NULL;
@@ -112,6 +125,123 @@ bool queue_put(p_queue_t queue, void *data)
 	return true;
 }
 
+bool queue_insert_maxsize(p_queue_t queue, void *data, 
+	int (*compare)(void *data1, void *data2))
+{
+	if (NULL == queue)
+	{
+		errno = EINVAL;
+		return false;
+	}
+
+	if (queue->size == 0)
+	{
+		queue->head->data = data;
+		queue->size++;
+		return true;
+
+	}
+
+	p_q_node_t new_node = NULL;
+	new_node = node_create(data);
+	if (NULL == new_node)
+	{
+		errno = ENOMEM;
+		return false;
+	}
+
+	p_q_node_t head = queue->head;	/* head指向第一个结点 */
+	p_q_node_t temp = NULL;
+	while (head != NULL)
+	{
+		if (1 == compare(head->data, data))	/* 大于 */
+		{
+			temp = head;
+			head = head->next;
+		}
+		else
+		{
+			if (head == queue->head)
+			{
+				new_node->next = queue->head;
+				queue->head = new_node;
+				queue->size++;
+				break;				
+			}
+			else
+			{
+				temp->next = new_node;		
+				new_node->next = head;
+				queue->size++;
+				break;
+			}
+		}
+	}
+	
+	return true;
+}
+
+bool queue_insert_minsize(p_queue_t queue, void *data, 
+		int (*compare)(void *data1, void *data2))
+{
+	if (NULL == queue)
+	{
+		errno = EINVAL;
+		return false;
+	}
+
+	if (queue->size == 0)
+	{
+		queue->head->data = data;
+		queue->size++;
+		return true;
+	}
+
+	p_q_node_t new_node = NULL;
+	new_node = node_create(data);
+	if (NULL == new_node)
+	{
+		errno = ENOMEM;
+		return false;
+	}	
+	
+	p_q_node_t head = queue->head;
+	p_q_node_t temp = NULL;
+	while (head != NULL)
+	{
+		if (-1 == compare(head->data, data))	/* head->data小于data */
+		{
+			temp = head;
+			head = head->next;
+			if (NULL == head)
+			{
+				temp->next = new_node;
+				new_node->next = NULL;
+				queue->tail = new_node;
+				queue->size++;
+				return true;
+			}
+		}
+		else
+		{
+			if (head == queue->head)
+			{
+				new_node->next = queue->head;
+				queue->head = new_node;
+				queue->size++;
+				break;
+			}
+			else
+			{
+				temp->next = new_node;
+				new_node->next = head;
+				queue->size++;
+				break;
+			}
+		}
+	}
+	return true;
+}
 bool queue_delete(p_queue_t queue)
 {
 	if (NULL == queue)

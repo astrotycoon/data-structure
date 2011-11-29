@@ -41,6 +41,16 @@ bool queue_empty(p_queue_t queue);
 void *queue_gethead(p_queue_t queue);
 
 bool queue_put(p_queue_t queue, void *data);
+/* 按数据大小插入 */
+bool queue_insert_maxsize(p_queue_t queue, void *data, 
+	int (*compare)(void *data1, void *data2));
+/*	队列元素按从大到小排列	
+ *	0  相等
+ *	1  大于
+ *	-1 小于
+ */
+bool queue_insert_minsize(p_queue_t queue, void *data,
+		int (*compare)(void *data1, void *data2));
 
 bool queue_delete(p_queue_t queue);
 
