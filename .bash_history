@@ -59,3 +59,12 @@ vim list.h
 vim /etc/vimrc 
 ll /etc/vimrc 
 su
+ls
+vim bashrc 
+cat bashrc 
+mkdir /tmp/chapter7_1
+ll /tmp/chapter7_1/
+ll -d /tmp/chapter7_1/
+rm -rf /tmp/chapter7_1/
+ls /tmp/
+exit

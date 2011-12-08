@@ -28,6 +28,7 @@ static p_q_node_t node_create(void *data)
 	new_node->next = NULL;
 	return new_node;
 }
+
 p_queue_t queue_create(void)
 {
 	p_queue_t queue = NULL;
@@ -244,7 +245,7 @@ bool queue_insert_minsize(p_queue_t queue, void *data,
 }
 bool queue_delete(p_queue_t queue)
 {
-	if (NULL == queue)
+	if (NULL == queue || 0 == queue->size)
 	{
 		errno = EINVAL;
 		return false;

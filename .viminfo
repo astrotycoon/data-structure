@@ -8,10 +8,10 @@
 # hlsearch on (H) or off (h):
 ~H
 # Command Line History (newest to oldest):
+:q
 :wq
 :w
 :q!
-:q
 :wq!
 
 # Search String History (newest to oldest):
@@ -49,18 +49,19 @@
 	
 
 # File marks:
-'0  92  20  ~/list.h
-'1  54  9  /etc/vimrc
-'2  60  50  ~/list.h
-'3  87  36  ~/list.h
-'4  14  0  ~/list.h
-'5  91  0  ~/list.h
-'6  85  0  ~/list.c
+'0  1  0  ~/bashrc
+'1  92  20  ~/list.h
+'2  54  9  /etc/vimrc
+'3  60  50  ~/list.h
+'4  87  36  ~/list.h
+'5  14  0  ~/list.h
+'6  91  0  ~/list.h
 '7  85  0  ~/list.c
-'8  78  0  ~/list.c
-'9  168  0  ~/list.c
+'8  85  0  ~/list.c
+'9  78  0  ~/list.c
 
 # Jumplist (newest first):
+-'  1  0  ~/bashrc
 -'  92  20  ~/list.h
 -'  60  0  ~/list.h
 -'  54  9  /etc/vimrc
