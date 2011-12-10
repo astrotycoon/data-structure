@@ -1,12 +1,12 @@
-/********************************************************
-*	ÎÄ¼þÃû: dqueue.c
+/*********************************************************
+*	æ–‡ä»¶å: dqueue.c
 *
-*	ÎÄ¼þÃèÊö: Ë«ÏòÑ­»·¶ÓÁÐ²Ù×÷µÄÊµÏÖ
+*	æ–‡ä»¶æè¿°ï¼šåŒå‘é˜Ÿåˆ—å‡½æ•°å®žçŽ°
 *
-*	´´½¨ÈË: Astrol 2011-12-7 19:18:22
+*	åˆ›å»ºäºº: Astrol 2011-12-8 16:02:33
 *
-*	°æ±¾ºÅ: 1.0
-*********************************************************/
+*	ç‰ˆæœ¬å·: 1.0
+**********************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,47 +15,42 @@
 
 static p_dl_node_t node_create(void *data)
 {
-	p_dl_node_t node_ret = NULL;
-	node_ret = (p_dl_node_t)malloc(sizeof(dl_node));
-	if (NULL == node_ret)
+	p_dl_node_t new_node = NULL;
+	new_node = (p_dl_node_t)malloc(sizeof(dl_node_t));
+	if (NULL == new_node)
 	{
 		errno = ENOMEM;
 		return NULL;
 	}
-	
-	node_ret->data = data;
-	node_ret->prev = NULL;
-	node_ret->next = NULL;
-	
-	return node_ret;
+	new_node->data = data;
+	new_node->prev = NULL;
+	new_node->next = NULL;
+
+	return new_node;
 }
 
 p_dqueue_t dqueue_create(void)
 {
-	p_dqueue_t dqueue_ret = NULL;
-	
-	dqueue_ret = (p_dqueue_t)malloc(sizeof(dqueue_t));
-	if (NULL == dqueue_ret)
+	p_dqueue_t dqueue = NULL;
+
+	dqueue = (p_dqueue_t)malloc(sizeof(dqueue_t));
+	if (NULL == dqueue)
 	{
 		errno = ENOMEM;
 		return NULL;
 	}
-	
-	dqueue_ret->head = (p_dl_node_t)malloc(sizeof(dl_node));
-	if (NULL == dqueue_ret->head)
+	dqueue->head = node_create(NULL);
+	if (NULL == dqueue->head)
 	{
-		free(dqueue_ret);	/* easy to forget */
+		free(dqueue);
 		errno = ENOMEM;
 		return NULL;
 	}
-	dqueue_ret->head->data = NULL;
-	dqueue_ret->head->prev = NULL;
-	dqueue_ret->head->next = NULL;
-	dqueue_ret->size = 0;
-	dqueue_ret->tail = dqueue_ret->head;
-	
-	return dqueue_ret;
-}
+	dqueue->size = 0;
+	dqueue->tail = dqueue->head;
+
+	return dqueue;
+}	
 
 bool dqueue_destroy(p_dqueue_t dqueue)
 {
@@ -64,29 +59,125 @@ bool dqueue_destroy(p_dqueue_t dqueue)
 		errno = EINVAL;
 		return false;
 	}
-	
-	p_dl_node_t head = dqueue->head;	/* Ö¸ÏòµÚÒ»¸ö½Úµã */
-	while (head)
+	size_t count = 0;
+
+	for (count = dqueue->size; count >= 1; --count)
 	{
-		p_dl_node_t temp = head;
-		if (head->data)
-		{
-			free(head->data)
-		}
-		free(head);
-		head = temp->next;
+		dqueue_delete(dqueue);
 	}
+	free(dqueue);
+
 	return true;
 }
 
 bool dqueue_empty(p_dqueue_t dqueue)
+{
+	if (NULL == dqueue)
+	{
+		errno = EINVAL;
+		return false;
+	}
+
+	return (dqueue->size == 0);
+
+}
+
+void *dqueue_gethead(p_dqueue_t dqueue)
+{
+	if (NULL == dqueue || 0 == dqueue->size)
+	{
+		errno = EINVAL;
+		return NULL;
+	}
+	return dqueue->head->data;
+}
+
+bool dqueue_put(p_dqueue_t dqueue, void *data)
 {
 	if (NULL == dqueue || NULL == dqueue->head)
 	{
 		errno = EINVAL;
 		return false;
 	}
+
+	if (0 == dqueue->size)
+	{
+		dqueue->head->data = data;
+		dqueue->size++;
+		return true;
+	}
+
+	p_dl_node_t new_node = NULL;
+	new_node = node_create(data);
+	if (NULL == new_node)
+	{
+		errno = ENOMEM;
+		return false;
+	}
 	
-	return (dqueue->size == 0);
+	new_node->prev = dqueue->tail;
+	new_node->next = NULL;
+	dqueue->tail->next = new_node;
+	dqueue->tail = new_node;
+	dqueue->size++;
+
+	return true;
+}
+
+bool dqueue_pop_head(p_dqueue_t dqueue)
+{
+	if (NULL == dqueue || 0 == dqueue->size)
+	{
+		errno = EINVAL;
+		return false;
+	}
+	
+	p_dl_node_t head = dqueue->head->next;
+	free(dqueue->head->data);
+	free(dqueue->head);
+	dqueue->head = head;
+	if (NULL != dqueue->head)
+	{
+		dqueue->head->prev = NULL;
+	}
+	dqueue->size--;
+
+	return true;
+}
+
+bool dqueue_delete(p_dqueue_t dqueue)
+{
+	if (NULL == dqueue || 0 == dqueue->size)
+	{
+		errno = EINVAL;
+		return false;
+	}
+
+	p_dl_node_t head = dqueue->head;	/* headæŒ‡å‘é˜Ÿåˆ—å¤´ç»“ç‚¹ */
+	free(head->data);
+	free(head);
+	dqueue->head = dqueue->head->next;
+	if (NULL != dqueue->head)
+	{
+		dqueue->head->prev = NULL;
+	}
+	dqueue->size--;
+
+	return true;
+}
+
+void dqueue_print(p_dqueue_t dqueue, void (*fp)(void *data))
+{
+	if (NULL == dqueue || 0 == dqueue->size)
+	{
+		errno = EINVAL;
+		return;
+	}
+	p_dl_node_t head = dqueue->head;
+	while (head)
+	{
+		(*fp)(head->data);
+		head = head->next;
+	}
 }
 

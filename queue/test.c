@@ -124,6 +124,8 @@ int main(void)
 	printf("%4d\n", test->size);
 	printf("%4d\n",*((int *)test->head->data));
 	printf("%4d\n", *((int *)test->head->next->data));
+
+	queue_destroy(test);
 	putchar('\n');
 	return 0;
 }
